@@ -1,7 +1,2 @@
-export interface Product {
-  sku: string;
-  name: string;
-  description: string;
-  price: number;
-  imageSrc: string;
-}
+import { Product } from './product';
+export default Product;
