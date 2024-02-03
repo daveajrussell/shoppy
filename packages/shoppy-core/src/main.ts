@@ -1,2 +1,7 @@
-import { Product } from './product';
-export default Product;
+export interface Product {
+  sku: string;
+  name: string;
+  description: string;
+  price: number;
+  imageSrc: string;
+}
