@@ -1,8 +1,21 @@
 import express, { Request, Response } from 'express';
-import { Product } from 'shoppy-core';
+import { Product, Cart } from 'shoppy-core';
+import cors from 'cors';
+
+const corsOptions = {
+  origin: 'http://localhost:5173',
+} as cors.CorsOptions;
 
 const app = express();
+app.use(cors(corsOptions));
 const port = process.env.PORT || 3000;
+
+interface CartDictionary {
+  [id: number]: Cart;
+}
+
+const carts: CartDictionary = {};
+let cartIdSeed = 0;
 
 app.get('/latest-products', (req: Request, res: Response) => {
   const products = Array<Product>(
@@ -74,10 +87,26 @@ app.get('/latest-products', (req: Request, res: Response) => {
   res.send(products);
 });
 
-app.get('/basket/:id', (req: Request, res: Response) => {
-  res.send([]);
+app.get('/cart/:id', (req: Request, res: Response) => {
+  const cart = getCart(parseInt(req.params.id)) || createCart();
+  res.send(cart);
 });
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
+
+const getCart = (id: number): Cart => {
+  return carts[id];
+};
+
+const createCart = (): Cart => {
+  const id = (cartIdSeed += 1);
+  const cart = {
+    id: id,
+    products: Array<Product>(),
+    total: 0,
+  };
+  carts[id] = cart;
+  return cart;
+};

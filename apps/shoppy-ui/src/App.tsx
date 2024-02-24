@@ -1,5 +1,6 @@
 import './App.css';
 import LatestProducts from './components/LatestProducts';
+import Cart from './features/cart/Cart';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
             <div className="bg-white">
               <div className="lg:max-w-7xl lg:px-8 max-w-2xl mx-auto py-8 sm:px-6">
                 <LatestProducts></LatestProducts>
+                <Cart></Cart>
               </div>
             </div>
           </div>

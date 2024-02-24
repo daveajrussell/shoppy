@@ -5,3 +5,9 @@ export interface Product {
   price: number;
   imageSrc: string;
 }
+
+export interface Cart {
+  id: number;
+  products: Product[];
+  total: number;
+}
