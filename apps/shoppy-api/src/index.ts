@@ -122,18 +122,7 @@ const createCart = (): Cart => {
 
 const addProductToCart = (product: Product, cart: Cart): Cart => {
   const idx = cart.products.findIndex((value) => value.sku === product.sku);
-
-  const updatedProduct =
-    idx >= 0
-      ? {
-          ...cart.products[idx],
-          quantity: (cart.products[idx]?.quantity ?? 1) + 1,
-        }
-      : {
-          ...product,
-          quantity: 1,
-        };
-
+  const updatedProduct = updateProduct(cart, product, idx);
   const updatedProducts = updateCartProducts(cart, updatedProduct, idx);
   const cartTotal = updateCartTotal(updatedProducts);
 
@@ -144,11 +133,27 @@ const addProductToCart = (product: Product, cart: Cart): Cart => {
   };
 };
 
+const updateProduct = (cart: Cart, product: Product, idx: number): Product => {
+  return idx >= 0
+    ? {
+        ...cart.products[idx],
+        quantity: (cart.products[idx]?.quantity ?? 1) + 1,
+      }
+    : {
+        ...product,
+        quantity: 1,
+      };
+};
+
 const updateCartProducts = (
   cart: Cart,
   product: Product,
   idx: number,
 ): Array<Product> => {
+  if (idx === -1) {
+    return [...cart.products, product];
+  }
+
   return [
     ...cart.products.slice(0, idx),
     product,
