@@ -7,6 +7,7 @@ const corsOptions = {
 } as cors.CorsOptions;
 
 const app = express();
+app.use(express.json());
 app.use(cors(corsOptions));
 const port = process.env.PORT || 3000;
 
@@ -92,6 +93,14 @@ app.get('/cart/:id', (req: Request, res: Response) => {
   res.send(cart);
 });
 
+app.patch('/cart/:id', (req: Request, res: Response) => {
+  const cart = getCart(parseInt(req.params.id)) || createCart();
+  const product = req.body as Product;
+  const updatedCart = addProductToCart(product, cart);
+  updateCart(updatedCart);
+  res.sendStatus(200);
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
@@ -109,4 +118,48 @@ const createCart = (): Cart => {
   };
   carts[id] = cart;
   return cart;
+};
+
+const addProductToCart = (product: Product, cart: Cart): Cart => {
+  const idx = cart.products.findIndex((value) => value.sku === product.sku);
+
+  const updatedProduct =
+    idx >= 0
+      ? {
+          ...cart.products[idx],
+          quantity: (cart.products[idx]?.quantity ?? 1) + 1,
+        }
+      : {
+          ...product,
+          quantity: 1,
+        };
+
+  const updatedProducts = updateCartProducts(cart, updatedProduct, idx);
+  const cartTotal = updateCartTotal(updatedProducts);
+
+  return {
+    ...cart,
+    products: updatedProducts,
+    total: cartTotal,
+  };
+};
+
+const updateCartProducts = (
+  cart: Cart,
+  product: Product,
+  idx: number,
+): Array<Product> => {
+  return [
+    ...cart.products.slice(0, idx),
+    product,
+    ...cart.products.slice(idx + 1),
+  ];
+};
+
+const updateCartTotal = (products: Array<Product>): number => {
+  return products.reduce((p, c) => p + (c?.quantity ?? 1) * c.price, 0);
+};
+
+const updateCart = (cart: Cart) => {
+  carts[cart.id] = cart;
 };

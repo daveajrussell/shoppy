@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Product } from 'shoppy-core';
 import ModalDialog from './ModalDialog';
-import AddToBagButton from './AddToBagButton';
+import AddToCartButton from '../features/cart/AddToCartButton';
 
 interface QuickViewProps {
   product: Product;
@@ -48,9 +48,7 @@ const QuickViewButton = ({ product }: QuickViewProps) => {
                 Product options
               </h3>
 
-              <form>
-                <AddToBagButton product={product}></AddToBagButton>
-              </form>
+              <AddToCartButton product={product}></AddToCartButton>
             </section>
           </div>
         </div>
