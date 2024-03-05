@@ -96,8 +96,18 @@ app.get('/cart/:id', (req: Request, res: Response) => {
 app.patch('/cart/:id', (req: Request, res: Response) => {
   const cart = getCart(parseInt(req.params.id)) || createCart();
   const product = req.body as Product;
-  const updatedCart = addProductToCart(product, cart);
+  const updatedCart = updateProductInCart(product, cart);
   updateCart(updatedCart);
+  res.sendStatus(200);
+});
+
+app.delete('/cart/:id/:sku', (req: Request, res: Response) => {
+  const cart = getCart(parseInt(req.params.id));
+  if (cart) {
+    const sku = req.params.sku;
+    const updatedCart = removeProductFromCart(sku, cart);
+    updateCart(updatedCart);
+  }
   res.sendStatus(200);
 });
 
@@ -120,7 +130,7 @@ const createCart = (): Cart => {
   return cart;
 };
 
-const addProductToCart = (product: Product, cart: Cart): Cart => {
+const updateProductInCart = (product: Product, cart: Cart): Cart => {
   const idx = cart.products.findIndex((value) => value.sku === product.sku);
   const updatedProduct = updateProduct(cart, product, idx);
   const updatedProducts = updateCartProducts(cart, updatedProduct, idx);
@@ -133,11 +143,25 @@ const addProductToCart = (product: Product, cart: Cart): Cart => {
   };
 };
 
+const removeProductFromCart = (sku: string, cart: Cart): Cart => {
+  const idx = cart.products.findIndex((value) => value.sku === sku);
+  if (idx >= 0) {
+    cart.products.splice(idx, 1);
+    const cartTotal = updateCartTotal(cart.products);
+
+    return {
+      ...cart,
+      total: cartTotal,
+    };
+  }
+  return cart;
+};
+
 const updateProduct = (cart: Cart, product: Product, idx: number): Product => {
   return idx >= 0
     ? {
         ...cart.products[idx],
-        quantity: (cart.products[idx]?.quantity ?? 1) + 1,
+        quantity: product.quantity ?? 1,
       }
     : {
         ...product,

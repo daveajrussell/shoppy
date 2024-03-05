@@ -10,11 +10,21 @@ export const cartApiSlice = createApi({
       query: (id: number = 0) => id.toString(),
       providesTags: (_, __, id) => [{ type: 'Cart', id }],
     }),
-    addToCart: builder.mutation<Cart, Partial<Product> & Pick<Cart, 'id'>>({
+    updateCart: builder.mutation<Cart, Partial<Product> & Pick<Cart, 'id'>>({
       query: ({ id, ...product }) => ({
         url: id?.toString() ?? '',
         method: 'PATCH',
         body: product,
+      }),
+      invalidatesTags: ['Cart'],
+    }),
+    removeFromCart: builder.mutation<
+      Cart,
+      Pick<Product, 'sku'> & Pick<Cart, 'id'>
+    >({
+      query: ({ id, sku }) => ({
+        url: `${id?.toString() ?? ''}/${sku ?? ''}`,
+        method: 'DELETE',
       }),
       invalidatesTags: ['Cart'],
     }),
@@ -28,4 +38,8 @@ export const cartApiMiddleware = (_: any) => (next: any) => (action: any) => {
   return next(action);
 };
 
-export const { useGetCartQuery, useAddToCartMutation } = cartApiSlice;
+export const {
+  useGetCartQuery,
+  useUpdateCartMutation,
+  useRemoveFromCartMutation,
+} = cartApiSlice;

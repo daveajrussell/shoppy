@@ -4,11 +4,17 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 
 interface ModalDialogProps {
   children?: ReactNode;
+  title: string;
   open: boolean;
   setOpen(open: boolean): void;
 }
 
-export const ModalDialog = ({ children, open, setOpen }: ModalDialogProps) => {
+export const ModalDialog = ({
+  children,
+  title,
+  open,
+  setOpen,
+}: ModalDialogProps) => {
   return (
     <>
       <Transition appear show={open} as={Fragment}>
@@ -39,8 +45,14 @@ export const ModalDialog = ({ children, open, setOpen }: ModalDialogProps) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="flex w-full transform text-left text-base transition md:my-8 md:max-w-2xl md:px-4 lg:max-w-4xl">
-                  <div className="relative flex w-full items-center overflow-hidden bg-white px-4 pb-8 pt-14 shadow-2xl sm:px-6 sm:pt-8 md:p-6 lg:p-8">
+                <Dialog.Panel className="md:max-w-2xl md:px-4 text-left w-full">
+                  <div className="bg-white md:p-6 relative shadow-2xl w-full">
+                    <h2
+                      className="text-lg font-medium text-gray-900"
+                      id="slide-over-title"
+                    >
+                      {title}
+                    </h2>
                     <button
                       type="button"
                       className="absolute right-4 top-4 text-gray-400 hover:text-gray-500 sm:right-6 sm:top-8 md:right-6 md:top-6 lg:right-8 lg:top-8"

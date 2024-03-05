@@ -27,7 +27,7 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
 };
 
 const cartId: number = parseInt(localStorage.getItem('cartId') ?? '0') ?? 0;
-const preloadedState = { cart: { id: cartId } };
+const preloadedState = { cart: { id: cartId, products: [], total: 0 } };
 
 export const store = makeStore(preloadedState);
 export type AppStore = typeof store;
