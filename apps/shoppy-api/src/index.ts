@@ -158,10 +158,15 @@ const removeProductFromCart = (sku: string, cart: Cart): Cart => {
 };
 
 const updateProduct = (cart: Cart, product: Product, idx: number): Product => {
+  const quantity =
+    idx >= 0 && !product.quantity
+      ? (cart.products[idx].quantity ?? 1) + 1
+      : product.quantity ?? 1;
+
   return idx >= 0
     ? {
         ...cart.products[idx],
-        quantity: product.quantity ?? 1,
+        quantity: quantity,
       }
     : {
         ...product,

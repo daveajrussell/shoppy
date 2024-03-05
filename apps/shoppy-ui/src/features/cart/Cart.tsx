@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAppSelector } from '../../app/hooks';
 import ModalDialog from '../../components/ModalDialog';
 import {
@@ -6,16 +6,13 @@ import {
   useRemoveFromCartMutation,
   useUpdateCartMutation,
 } from './cartApiSlice';
-import { selectCartId, selectCart, setCartProductState } from './cartSlice';
+import { selectCartId } from './cartSlice';
 import { Product } from 'shoppy-core';
-import { useDispatch } from 'react-redux';
-import { setCartState } from './cartSlice';
 import { debounce } from 'lodash';
 
 const Cart = () => {
   const [open, setOpen] = useState(false);
   const id = useAppSelector(selectCartId);
-  const cart = useAppSelector(selectCart);
   const { data, isError, isLoading, isSuccess } = useGetCartQuery(id);
 
   const [removeFromCart] = useRemoveFromCartMutation();
@@ -29,25 +26,15 @@ const Cart = () => {
     await updateCart({ ...product, id });
   };
 
-  const cartData = data;
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!cartData) return;
-    dispatch(setCartState(cartData));
-  }, [dispatch, cartData]);
-
   const handleChange = async (product: Product, quantity: number) => {
-    dispatch(setCartProductState({ product, quantity }));
     await updateProductInCartAsync({ ...product, quantity: quantity });
   };
 
   const debouncedOnChange = debounce(handleChange, 500);
 
   function getCartText(): string {
-    if (isSuccess && cart) {
-      if (cart.products.length > 0) return `Cart (${cart.products.length})`;
+    if (isSuccess && data) {
+      if (data.products.length > 0) return `Cart (${data.products.length})`;
     }
     return 'Cart';
   }
@@ -67,7 +54,7 @@ const Cart = () => {
       </div>
     );
   }
-  if (isSuccess && cart) {
+  if (isSuccess && data) {
     return (
       <>
         <button onClick={() => setOpen(true)}>{getCartText()}</button>
@@ -76,7 +63,7 @@ const Cart = () => {
             <div className="mt-4">
               <div>
                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                  {cart.products.map((product) => (
+                  {data.products.map((product) => (
                     <li key={product.sku} className="flex py-6">
                       <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                         <img
@@ -134,7 +121,7 @@ const Cart = () => {
               <div className="mt-4">
                 <div className="flex justify-between text-base font-medium text-gray-900">
                   <h3>Subtotal</h3>
-                  <p className="ml-4">${cart.total}</p>
+                  <p className="ml-4">${data.total}</p>
                 </div>
                 <p className="mt-0.5 text-sm text-gray-500">
                   Shipping and taxes calculated at checkout.
