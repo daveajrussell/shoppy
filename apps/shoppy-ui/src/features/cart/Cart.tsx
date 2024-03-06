@@ -22,12 +22,9 @@ const Cart = () => {
     await removeFromCart({ sku: product.sku, id: id });
   };
 
-  const updateProductInCartAsync = async (product: Product) => {
-    await updateCart({ ...product, id });
-  };
-
   const handleChange = async (product: Product, quantity: number) => {
-    await updateProductInCartAsync({ ...product, quantity: quantity });
+    const updatedProduct = { ...product, quantity: quantity };
+    await updateCart({ ...updatedProduct, id }).unwrap();
   };
 
   const debouncedOnChange = debounce(handleChange, 500);

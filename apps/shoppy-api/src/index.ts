@@ -98,7 +98,7 @@ app.patch('/cart/:id', (req: Request, res: Response) => {
   const product = req.body as Product;
   const updatedCart = updateProductInCart(product, cart);
   updateCart(updatedCart);
-  res.sendStatus(200);
+  res.send(updatedCart);
 });
 
 app.delete('/cart/:id/:sku', (req: Request, res: Response) => {
@@ -107,8 +107,10 @@ app.delete('/cart/:id/:sku', (req: Request, res: Response) => {
     const sku = req.params.sku;
     const updatedCart = removeProductFromCart(sku, cart);
     updateCart(updatedCart);
+    res.send(updateCart);
+  } else {
+    res.sendStatus(404);
   }
-  res.sendStatus(200);
 });
 
 app.listen(port, () => {
