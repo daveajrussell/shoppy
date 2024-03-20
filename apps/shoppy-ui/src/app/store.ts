@@ -1,9 +1,4 @@
-import {
-  Action,
-  ThunkAction,
-  combineSlices,
-  configureStore,
-} from '@reduxjs/toolkit';
+import { combineSlices, configureStore } from '@reduxjs/toolkit';
 import { cartApiMiddleware, cartApiSlice } from '../features/cart/cartApiSlice';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { cartSlice } from '../features/cart/cartSlice';
@@ -30,11 +25,3 @@ const cartId: number = parseInt(localStorage.getItem('cartId') ?? '0') ?? 0;
 const preloadedState = { cart: { id: cartId, products: [], total: 0 } };
 
 export const store = makeStore(preloadedState);
-export type AppStore = typeof store;
-export type AppDispatch = AppStore['dispatch'];
-export type AppThunk<ThunkReturnType = void> = ThunkAction<
-  ThunkReturnType,
-  RootState,
-  unknown,
-  Action
->;

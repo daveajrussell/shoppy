@@ -107,7 +107,7 @@ app.delete('/cart/:id/:sku', (req: Request, res: Response) => {
     const sku = req.params.sku;
     const updatedCart = removeProductFromCart(sku, cart);
     updateCart(updatedCart);
-    res.send(updateCart);
+    res.send(updatedCart);
   } else {
     res.sendStatus(404);
   }

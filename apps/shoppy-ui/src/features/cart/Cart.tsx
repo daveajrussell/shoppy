@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useAppSelector } from '../../app/hooks';
 import ModalDialog from '../../components/ModalDialog';
 import {
   useGetCartQuery,
@@ -9,10 +8,11 @@ import {
 import { selectCartId } from './cartSlice';
 import { Product } from 'shoppy-core';
 import { debounce } from 'lodash';
+import { useSelector } from 'react-redux';
 
 const Cart = () => {
   const [open, setOpen] = useState(false);
-  const id = useAppSelector(selectCartId);
+  const id = useSelector(selectCartId);
   const { data, isError, isLoading, isSuccess } = useGetCartQuery(id);
 
   const [removeFromCart] = useRemoveFromCartMutation();

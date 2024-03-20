@@ -1,4 +1,4 @@
-import { createAppSlice } from '../../app/createAppSlice';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState: CartSliceState = {
   id: 0,
@@ -8,7 +8,7 @@ interface CartSliceState {
   id: number;
 }
 
-export const cartSlice = createAppSlice({
+export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: () => ({}),

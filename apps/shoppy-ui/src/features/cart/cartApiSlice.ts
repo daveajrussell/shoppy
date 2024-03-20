@@ -1,18 +1,15 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { Cart, Product } from 'shoppy-core';
+import { apiSlice } from './api/createApi';
 
-export const cartApiSlice = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000/cart' }),
-  reducerPath: 'cartApi',
-  tagTypes: ['Cart'],
+export const cartApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCart: builder.query<Cart, number>({
-      query: (id: number = 0) => id.toString(),
+      query: (id: number = 0) => 'cart/' + id.toString(),
       providesTags: (_, __, id) => [{ type: 'Cart', id }],
     }),
     updateCart: builder.mutation<Cart, Partial<Product> & Pick<Cart, 'id'>>({
       query: ({ id, ...product }) => ({
-        url: id?.toString() ?? '',
+        url: `cart/${id?.toString() ?? ''}`,
         method: 'PATCH',
         body: product,
       }),
@@ -23,7 +20,7 @@ export const cartApiSlice = createApi({
       Pick<Product, 'sku'> & Pick<Cart, 'id'>
     >({
       query: ({ id, sku }) => ({
-        url: `${id?.toString() ?? ''}/${sku ?? ''}`,
+        url: `cart/${id?.toString() ?? ''}/${sku ?? ''}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Cart'],
@@ -32,7 +29,7 @@ export const cartApiSlice = createApi({
 });
 
 export const cartApiMiddleware = (_: any) => (next: any) => (action: any) => {
-  if (action.type === 'cartApi/executeQuery/fulfilled' && action.payload?.id) {
+  if (action.type === 'api/executeQuery/fulfilled' && action.payload?.id) {
     localStorage.setItem('cartId', action.payload.id);
   }
   return next(action);

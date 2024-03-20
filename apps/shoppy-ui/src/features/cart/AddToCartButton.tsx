@@ -1,14 +1,14 @@
 import { Product } from 'shoppy-core';
 import { useUpdateCartMutation } from './cartApiSlice';
-import { useAppSelector } from '../../app/hooks';
 import { selectCartId } from './cartSlice';
+import { useSelector } from 'react-redux';
 
 interface AddToCartButtonProps {
   product: Product;
 }
 
 const AddToCartButton = ({ product }: AddToCartButtonProps) => {
-  const id = useAppSelector(selectCartId);
+  const id = useSelector(selectCartId);
 
   const [updateCart] = useUpdateCartMutation();
   const addProductToCartAsync = async (product: Product) => {
